@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetworkManager {
 
     public static final String API_URL = "https://api.themoviedb.org/3/";
+    public static final String API_KEY = "43a7ea280d085bd0376e108680615c7f";
 
     private Context context;
 
