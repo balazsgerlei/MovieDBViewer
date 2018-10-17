@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import hu.gerlotdev.moviedbviewer.R;
 import hu.gerlotdev.moviedbviewer.data.model.Movie;
+import hu.gerlotdev.moviedbviewer.data.network.NetworkManager;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieItemViewHolder> {
 
@@ -34,6 +37,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     @Override
     public void onBindViewHolder(@NonNull MovieItemViewHolder movieItemViewHolder, int i) {
         Movie movie = movies.get(i);
+        movieItemViewHolder.setMovieImage(movie.getPosterPath());
         movieItemViewHolder.setTitle(movie.getTitle());
         movieItemViewHolder.setBudget(movie.getBudget());
         movieItemViewHolder.setRating(movie.getVoteAverage());
@@ -51,8 +55,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         private TextView tvBudget;
         private TextView tvRating;
 
-        public void setMovieImage() {
-            // TODO
+        public void setMovieImage(String imageUrl) {
+            ImageLoader.getInstance().displayImage(NetworkManager.IMAGE_API_URL + imageUrl, ivMovieImage);
         }
 
         public void setTitle(String title) {
