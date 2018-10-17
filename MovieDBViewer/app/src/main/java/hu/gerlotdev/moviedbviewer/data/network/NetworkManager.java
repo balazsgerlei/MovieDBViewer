@@ -1,8 +1,6 @@
 package hu.gerlotdev.moviedbviewer.data.network;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;

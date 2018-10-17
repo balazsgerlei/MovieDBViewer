@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 
 import hu.gerlotdev.moviedbviewer.R;
 
-
 public class SingleFragmentActivity extends BaseActivity {
 
     @Override
