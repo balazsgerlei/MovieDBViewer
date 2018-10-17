@@ -1,22 +1,36 @@
-package hu.gerlotdev.moviedbviewer.data.entity;
+package hu.gerlotdev.moviedbviewer.data.model;
 
-public class Movie implements Entity {
+import com.google.gson.annotations.SerializedName;
+
+public class Movie {
 
     private long id;
 
     private boolean adult;
+
+    @SerializedName("backdrop_path")
     private String backdropPath;
     private int budget;
     // private List<Genre> genres; // TODO if have time
     private String homepage;
+
+    @SerializedName("imdb_id")
     private String imdbId;
+
+    @SerializedName("original_language")
     private String originalLanguage;
+
+    @SerializedName("original_title")
     private String originalTitle;
     private String overview;
     private double popularity;
+
+    @SerializedName("poster_path")
     private String posterPath;
     // private List<Company> productionCompanies; // TODO if have time
     // private List<Country> productionCountries; // TODO if have time
+
+    @SerializedName("release_date")
     private String releaseDate; // TODO LocalDate
     private int revenue;
     private Integer runtime;
@@ -24,15 +38,17 @@ public class Movie implements Entity {
     private String tagline;
     private String title;
     private boolean video;
+
+    @SerializedName("vote_average")
     private double voteAverage;
+
+    @SerializedName("vote_count")
     private double voteCount;
 
-    @Override
     public void setId(long id) {
         this.id = id;
     }
 
-    @Override
     public long getId() {
         return id;
     }
