@@ -13,6 +13,6 @@ public interface MovieApi {
     Single<MoviePage> getMovies(@Query("api_key") String apiKey, @Query("query") String query);
 
     @GET("movie/{id}")
-    Single<Movie> getMovie(@Path("id") int id, @Query("api_key") String apiKey);
+    Single<Movie> getMovie(@Path("id") long id, @Query("api_key") String apiKey);
 
 }
