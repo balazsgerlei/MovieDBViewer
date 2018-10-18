@@ -37,21 +37,22 @@ public class GetMoviesUseCase extends UseCase<List<Movie>> {
                 .map(new Function<MoviePage, List<Movie>>() {
                     @Override
                     public List<Movie> apply(MoviePage moviePage) throws Exception {
-                        return moviePage.getResults();
+                        return moviePage.getResults(); // Transform Single<MoviePage> to Single<List<Movie>>
                     }
                 })
-                .toObservable().flatMap(new Function<List<Movie>, ObservableSource<Movie>>() {
+                .toObservable() // Transform Single<List<Movie>> to Observable<List<Movie>>
+                .flatMap(new Function<List<Movie>, ObservableSource<Movie>>() {
                     @Override
                     public ObservableSource<Movie> apply(List<Movie> movies) throws Exception {
-                        return Observable.fromIterable(movies);
+                        return Observable.fromIterable(movies); // Transform Observable<List<Movie>> to Observable<Movie> which emits items one at a time
                     }
                 })
                 .flatMap(new Function<Movie, ObservableSource<? extends Movie>>() {
                     @Override
                     public ObservableSource<? extends Movie> apply(Movie movie) throws Exception {
-                        return movieApi.getMovie(movie.getId(), NetworkManager.API_KEY).toObservable();
+                        return movieApi.getMovie(movie.getId(), NetworkManager.API_KEY).toObservable(); // Fire an API request for each Movie item to get the full details for that movie
                     }
-                }).toList();
+                }).toList(); // Transform Observable<Movie> back into Single<List<Movie>> which contains all emitted items in the list that it emits - now with full details for each movie
     }
 
 }
