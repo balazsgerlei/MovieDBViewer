@@ -19,12 +19,15 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 
+import javax.inject.Inject;
+
 import hu.gerlotdev.moviedbviewer.R;
 import hu.gerlotdev.moviedbviewer.data.model.MoviePage;
 import hu.gerlotdev.moviedbviewer.data.network.MovieApi;
 import hu.gerlotdev.moviedbviewer.data.network.NetworkManager;
 import hu.gerlotdev.moviedbviewer.domain.usecase.GetMoviesUseCase;
 import hu.gerlotdev.moviedbviewer.presentation.BaseFragment;
+import hu.gerlotdev.moviedbviewer.presentation.MovieDBViewerApplication;
 import hu.gerlotdev.moviedbviewer.presentation.UIThread;
 import io.reactivex.observers.DisposableSingleObserver;
 
@@ -42,7 +45,8 @@ public class MainFragment extends BaseFragment<MainFragment.MainFragmentListener
     private static final int LOADING_VIEW = 1;
     private static final int CONTENT_VIEW = 2;
 
-    private GetMoviesUseCase getMoviesUseCase;
+    @Inject
+    GetMoviesUseCase getMoviesUseCase;
 
     private Toolbar toolbar;
     private EditText etSearch;
@@ -53,6 +57,10 @@ public class MainFragment extends BaseFragment<MainFragment.MainFragmentListener
 
     private MovieListAdapter rvMoviesListAdapter;
     private RecyclerView.LayoutManager rvMoviesLayoutManager;
+
+    public MainFragment() {
+        MovieDBViewerApplication.applicationComponent.inject(this);
+    }
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -100,16 +108,16 @@ public class MainFragment extends BaseFragment<MainFragment.MainFragmentListener
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etSearch.getText() != null && etSearch.getText().toString() != null && !etSearch.getText().toString().isEmpty()) {
+                if (etSearch.getText() != null
+                        && etSearch.getText().toString() != null
+                        && !etSearch.getText().toString().isEmpty()
+                        && getMoviesUseCase != null) {
                     // Hide the keyboard
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
 
                     vfThreeState.setDisplayedChild(LOADING_VIEW);
-                    getMoviesUseCase = new GetMoviesUseCase(UIThread.getInstance(),
-                            NetworkManager.getInstance(getActivity())
-                                    .provideRetrofit(NetworkManager.getInstance(getActivity()).provideOkHttpClient(getActivity()))
-                                    .create(MovieApi.class), etSearch.getText().toString());
+                    getMoviesUseCase.setQuery(etSearch.getText().toString());
                     getMoviesUseCase.execute(new GetMoviesObserver());
                 }
             }

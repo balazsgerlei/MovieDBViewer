@@ -8,7 +8,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class MovieDBViewerApplication extends Application {
 
-    public static ImageLoaderConfiguration config;
+    public static ApplicationComponent applicationComponent;
 
     @Override
     public void onCreate() {
@@ -16,6 +16,11 @@ public class MovieDBViewerApplication extends Application {
         AndroidThreeTen.init(this);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)	.build();
         ImageLoader.getInstance().init(config);
+
+        applicationComponent = DaggerApplicationComponent.builder()
+                .androidModule(new AndroidModule(this))
+                .build();
+
     }
 
 }
