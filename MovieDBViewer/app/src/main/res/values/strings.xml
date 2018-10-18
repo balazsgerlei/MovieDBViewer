@@ -3,4 +3,6 @@
     <string name="search">Search</string>
     <string name="budget">Budget:</string>
     <string name="rating">Rating:</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="search_for_a_keyword">Search for a keyword to view results!</string>
 </resources>

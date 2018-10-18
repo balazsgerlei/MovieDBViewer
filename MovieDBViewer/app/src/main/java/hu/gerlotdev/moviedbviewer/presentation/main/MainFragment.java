@@ -1,6 +1,7 @@
 package hu.gerlotdev.moviedbviewer.presentation.main;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,9 +11,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 
 import hu.gerlotdev.moviedbviewer.R;
@@ -34,11 +38,17 @@ public class MainFragment extends BaseFragment<MainFragment.MainFragmentListener
 
     }
 
+    private static final int ERROR_OR_EMPTY_VIEW = 0;
+    private static final int LOADING_VIEW = 1;
+    private static final int CONTENT_VIEW = 2;
+
     private GetMoviesUseCase getMoviesUseCase;
 
     private Toolbar toolbar;
     private EditText etSearch;
     private Button btnSearch;
+    private ViewFlipper vfThreeState;
+    private TextView tvError;
     private RecyclerView rvMovies;
 
     private MovieListAdapter rvMoviesListAdapter;
@@ -60,6 +70,13 @@ public class MainFragment extends BaseFragment<MainFragment.MainFragmentListener
         initViews(view);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        tvError.setText(getResources().getString(R.string.search_for_a_keyword));
+        vfThreeState.setDisplayedChild(ERROR_OR_EMPTY_VIEW);
+    }
+
     private void initViews(View view) {
         toolbar = view.findViewById(R.id.toolbar);
 
@@ -69,6 +86,8 @@ public class MainFragment extends BaseFragment<MainFragment.MainFragmentListener
 
         etSearch = view.findViewById(R.id.etSearch);
         btnSearch = view.findViewById(R.id.btnSearch);
+        vfThreeState = view.findViewById(R.id.vfThreeState);
+        tvError = view.findViewById(R.id.tvError);
         rvMovies = view.findViewById(R.id.rvMovies);
 
         rvMovies.setHasFixedSize(true);
@@ -82,6 +101,11 @@ public class MainFragment extends BaseFragment<MainFragment.MainFragmentListener
             @Override
             public void onClick(View v) {
                 if (etSearch.getText() != null && etSearch.getText().toString() != null && !etSearch.getText().toString().isEmpty()) {
+                    // Hide the keyboard
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+
+                    vfThreeState.setDisplayedChild(LOADING_VIEW);
                     getMoviesUseCase = new GetMoviesUseCase(UIThread.getInstance(),
                             NetworkManager.getInstance(getActivity())
                                     .provideRetrofit(NetworkManager.getInstance(getActivity()).provideOkHttpClient(getActivity()))
@@ -98,13 +122,14 @@ public class MainFragment extends BaseFragment<MainFragment.MainFragmentListener
         public void onSuccess(MoviePage moviePage) {
             if (moviePage.getResults() != null) {
                 rvMoviesListAdapter.setMovies(moviePage.getResults());
+                vfThreeState.setDisplayedChild(CONTENT_VIEW);
             }
         }
 
         @Override
         public void onError(Throwable e) {
-            // TODO correct error display
-            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+            tvError.setText(e.getMessage());
+            vfThreeState.setDisplayedChild(ERROR_OR_EMPTY_VIEW);
         }
     }
 
