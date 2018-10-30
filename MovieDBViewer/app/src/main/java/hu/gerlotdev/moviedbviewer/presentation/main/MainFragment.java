@@ -112,25 +112,22 @@ public class MainFragment extends BaseFragment<MainFragment.MainFragmentListener
         rvMoviesListAdapter = new MovieListAdapter();
         rvMovies.setAdapter(rvMoviesListAdapter);
 
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (etSearch.getText() != null
-                        && etSearch.getText().toString() != null
-                        && getMoviesUseCase != null) {
-                    if (etSearch.getText().toString().length() < 2) {
-                        tilSearch.setError(getResources().getString(R.string.at_least_two));
-                    } else {
-                        tilSearch.setError(null);
+        btnSearch.setOnClickListener(v -> {
+            if (etSearch.getText() != null
+                    && etSearch.getText().toString() != null
+                    && getMoviesUseCase != null) {
+                if (etSearch.getText().toString().length() < 2) {
+                    tilSearch.setError(getResources().getString(R.string.at_least_two));
+                } else {
+                    tilSearch.setError(null);
 
-                        // Hide the keyboard
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+                    // Hide the keyboard
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
 
-                        vfThreeState.setDisplayedChild(LOADING_VIEW);
-                        getMoviesUseCase.setQuery(etSearch.getText().toString());
-                        getMoviesUseCase.execute(new GetMoviesObserver());
-                    }
+                    vfThreeState.setDisplayedChild(LOADING_VIEW);
+                    getMoviesUseCase.setQuery(etSearch.getText().toString());
+                    getMoviesUseCase.execute(new GetMoviesObserver());
                 }
             }
         });
